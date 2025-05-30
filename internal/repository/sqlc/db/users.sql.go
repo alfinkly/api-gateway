@@ -43,24 +43,24 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 	return i, err
 }
 
-const deleteUser = `-- name: DeleteUser :exec
+const deleteUserById = `-- name: DeleteUserById :exec
 DELETE
 FROM users
 WHERE id = $1
 `
 
-func (q *Queries) DeleteUser(ctx context.Context, id int32) error {
-	_, err := q.db.ExecContext(ctx, deleteUser, id)
+func (q *Queries) DeleteUserById(ctx context.Context, id int32) error {
+	_, err := q.db.ExecContext(ctx, deleteUserById, id)
 	return err
 }
 
-const selectByEmail = `-- name: SelectByEmail :one
+const selectUserByEmail = `-- name: SelectUserByEmail :one
 SELECT id, username, name, surname, email
 FROM users
 WHERE email = $1
 `
 
-type SelectByEmailRow struct {
+type SelectUserByEmailRow struct {
 	ID       int32
 	Username string
 	Name     string
@@ -68,9 +68,9 @@ type SelectByEmailRow struct {
 	Email    string
 }
 
-func (q *Queries) SelectByEmail(ctx context.Context, email string) (SelectByEmailRow, error) {
-	row := q.db.QueryRowContext(ctx, selectByEmail, email)
-	var i SelectByEmailRow
+func (q *Queries) SelectUserByEmail(ctx context.Context, email string) (SelectUserByEmailRow, error) {
+	row := q.db.QueryRowContext(ctx, selectUserByEmail, email)
+	var i SelectUserByEmailRow
 	err := row.Scan(
 		&i.ID,
 		&i.Username,
@@ -81,13 +81,13 @@ func (q *Queries) SelectByEmail(ctx context.Context, email string) (SelectByEmai
 	return i, err
 }
 
-const selectById = `-- name: SelectById :one
+const selectUserById = `-- name: SelectUserById :one
 SELECT id, username, name, surname, email
 FROM users
 WHERE id = $1
 `
 
-type SelectByIdRow struct {
+type SelectUserByIdRow struct {
 	ID       int32
 	Username string
 	Name     string
@@ -95,9 +95,9 @@ type SelectByIdRow struct {
 	Email    string
 }
 
-func (q *Queries) SelectById(ctx context.Context, id int32) (SelectByIdRow, error) {
-	row := q.db.QueryRowContext(ctx, selectById, id)
-	var i SelectByIdRow
+func (q *Queries) SelectUserById(ctx context.Context, id int32) (SelectUserByIdRow, error) {
+	row := q.db.QueryRowContext(ctx, selectUserById, id)
+	var i SelectUserByIdRow
 	err := row.Scan(
 		&i.ID,
 		&i.Username,

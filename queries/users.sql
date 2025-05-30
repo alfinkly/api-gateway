@@ -1,9 +1,9 @@
--- name: SelectById :one
+-- name: SelectUserById :one
 SELECT id, username, name, surname, email
 FROM users
 WHERE id = $1;
 
--- name: SelectByEmail :one
+-- name: SelectUserByEmail :one
 SELECT id, username, name, surname, email
 FROM users
 WHERE email = $1;
@@ -19,7 +19,7 @@ SET username = $1, name = $2, surname = $3, email = $4, password = $5
 WHERE id = $6
 RETURNING id, username, name, surname, email, password;
 
--- name: DeleteUser :exec
+-- name: DeleteUserById :exec
 DELETE
 FROM users
 WHERE id = $1;
