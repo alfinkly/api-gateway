@@ -1,46 +1,23 @@
--- name: CreateUser :one
-INSERT INTO users (id,
-                   name,
-                   email,
-                   password)
-VALUES ($1,
-        $2,
-        $3,
-        $4
-       )
-RETURNING
-    id,
-    name,
-    email,
-    password;
-
-
--- name: GetUserByID :one
-SELECT id,
-       name,
-       email,
-       password
+-- name: SelectById :one
+SELECT id, username, name, surname, email
 FROM users
 WHERE id = $1;
 
--- name: GetUserByEmail :one
-SELECT id,
-       name,
-       email,
-       password
+-- name: SelectByEmail :one
+SELECT id, username, name, surname, email
 FROM users
 WHERE email = $1;
 
+-- name: CreateUser :one
+INSERT INTO users (username, name, surname, email, password)
+VALUES ($1, $2, $3, $4, $5)
+RETURNING id, username, name, surname, email, password;
+
 -- name: UpdateUser :one
 UPDATE users
-SET name  = $2,
-    email = $3
-WHERE id = $1
-RETURNING
-    id,
-    name,
-    email,
-    password;
+SET username = $1, name = $2, surname = $3, email = $4, password = $5
+WHERE id = $6
+RETURNING id, username, name, surname, email, password;
 
 -- name: DeleteUser :exec
 DELETE

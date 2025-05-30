@@ -10,47 +10,33 @@ import (
 )
 
 const createUser = `-- name: CreateUser :one
-INSERT INTO users (id,
-                   name,
-                   email,
-                   password)
-VALUES ($1,
-        $2,
-        $3,
-        $4
-       )
-RETURNING
-    id,
-    name,
-    email,
-    password
+INSERT INTO users (username, name, surname, email, password)
+VALUES ($1, $2, $3, $4, $5)
+RETURNING id, username, name, surname, email, password
 `
 
 type CreateUserParams struct {
-	ID       int32
+	Username string
 	Name     string
+	Surname  string
 	Email    string
 	Password string
 }
 
-type CreateUserRow struct {
-	ID       int32
-	Name     string
-	Email    string
-	Password string
-}
-
-func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (CreateUserRow, error) {
+func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {
 	row := q.db.QueryRowContext(ctx, createUser,
-		arg.ID,
+		arg.Username,
 		arg.Name,
+		arg.Surname,
 		arg.Email,
 		arg.Password,
 	)
-	var i CreateUserRow
+	var i User
 	err := row.Scan(
 		&i.ID,
+		&i.Username,
 		&i.Name,
+		&i.Surname,
 		&i.Email,
 		&i.Password,
 	)
@@ -68,93 +54,91 @@ func (q *Queries) DeleteUser(ctx context.Context, id int32) error {
 	return err
 }
 
-const getUserByEmail = `-- name: GetUserByEmail :one
-SELECT id,
-       name,
-       email,
-       password
+const selectByEmail = `-- name: SelectByEmail :one
+SELECT id, username, name, surname, email
 FROM users
 WHERE email = $1
 `
 
-type GetUserByEmailRow struct {
+type SelectByEmailRow struct {
 	ID       int32
+	Username string
 	Name     string
+	Surname  string
 	Email    string
-	Password string
 }
 
-func (q *Queries) GetUserByEmail(ctx context.Context, email string) (GetUserByEmailRow, error) {
-	row := q.db.QueryRowContext(ctx, getUserByEmail, email)
-	var i GetUserByEmailRow
+func (q *Queries) SelectByEmail(ctx context.Context, email string) (SelectByEmailRow, error) {
+	row := q.db.QueryRowContext(ctx, selectByEmail, email)
+	var i SelectByEmailRow
 	err := row.Scan(
 		&i.ID,
+		&i.Username,
 		&i.Name,
+		&i.Surname,
 		&i.Email,
-		&i.Password,
 	)
 	return i, err
 }
 
-const getUserByID = `-- name: GetUserByID :one
-SELECT id,
-       name,
-       email,
-       password
+const selectById = `-- name: SelectById :one
+SELECT id, username, name, surname, email
 FROM users
 WHERE id = $1
 `
 
-type GetUserByIDRow struct {
+type SelectByIdRow struct {
 	ID       int32
+	Username string
 	Name     string
+	Surname  string
 	Email    string
-	Password string
 }
 
-func (q *Queries) GetUserByID(ctx context.Context, id int32) (GetUserByIDRow, error) {
-	row := q.db.QueryRowContext(ctx, getUserByID, id)
-	var i GetUserByIDRow
+func (q *Queries) SelectById(ctx context.Context, id int32) (SelectByIdRow, error) {
+	row := q.db.QueryRowContext(ctx, selectById, id)
+	var i SelectByIdRow
 	err := row.Scan(
 		&i.ID,
+		&i.Username,
 		&i.Name,
+		&i.Surname,
 		&i.Email,
-		&i.Password,
 	)
 	return i, err
 }
 
 const updateUser = `-- name: UpdateUser :one
 UPDATE users
-SET name  = $2,
-    email = $3
-WHERE id = $1
-RETURNING
-    id,
-    name,
-    email,
-    password
+SET username = $1, name = $2, surname = $3, email = $4, password = $5
+WHERE id = $6
+RETURNING id, username, name, surname, email, password
 `
 
 type UpdateUserParams struct {
-	ID    int32
-	Name  string
-	Email string
-}
-
-type UpdateUserRow struct {
-	ID       int32
+	Username string
 	Name     string
+	Surname  string
 	Email    string
 	Password string
+	ID       int32
 }
 
-func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (UpdateUserRow, error) {
-	row := q.db.QueryRowContext(ctx, updateUser, arg.ID, arg.Name, arg.Email)
-	var i UpdateUserRow
+func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, error) {
+	row := q.db.QueryRowContext(ctx, updateUser,
+		arg.Username,
+		arg.Name,
+		arg.Surname,
+		arg.Email,
+		arg.Password,
+		arg.ID,
+	)
+	var i User
 	err := row.Scan(
 		&i.ID,
+		&i.Username,
 		&i.Name,
+		&i.Surname,
 		&i.Email,
 		&i.Password,
 	)
