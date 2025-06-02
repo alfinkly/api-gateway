@@ -3,14 +3,13 @@ package database
 import (
 	"database/sql"
 	"github.com/alfinkly/api-gateway/internal/config"
-	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 	"github.com/pressly/goose/v3"
 	"time"
 )
 
-func NewDB(cfg *config.Config) (*sqlx.DB, error) {
-	db, err := sqlx.Open("postgres", cfg.DBDSN)
+func NewDB(cfg *config.Config) (*sql.DB, error) {
+	db, err := sql.Open("postgres", cfg.DBDSN)
 	if err != nil {
 		return nil, err
 	}
@@ -24,7 +23,7 @@ func NewDB(cfg *config.Config) (*sqlx.DB, error) {
 
 	migrationsDir := "./migrations"
 
-	if err = initMigrations(db.DB, migrationsDir); err != nil {
+	if err = initMigrations(db, migrationsDir); err != nil {
 		return nil, err
 	}
 

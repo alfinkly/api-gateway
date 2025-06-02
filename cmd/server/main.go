@@ -3,7 +3,9 @@ package main
 import (
 	"fmt"
 	"github.com/alfinkly/api-gateway/internal/adapters/database"
+	"github.com/alfinkly/api-gateway/internal/adapters/http"
 	"github.com/alfinkly/api-gateway/internal/config"
+	"github.com/alfinkly/api-gateway/internal/repository/sqlc"
 )
 
 func main() {
@@ -19,4 +21,7 @@ func main() {
 		panic("А-а-а-а база мертва-а-а (┬┬﹏┬┬)")
 	}
 
+	queries := sqlc.New(db)
+
+	http.StartServer(queries, cfg.HTTPAddr)
 }

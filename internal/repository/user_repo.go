@@ -1,14 +1,18 @@
-package sqlc
+package repository
 
 import (
 	"context"
 	"github.com/alfinkly/api-gateway/internal/domain"
-	"github.com/alfinkly/api-gateway/internal/repository/sqlc/db"
+	"github.com/alfinkly/api-gateway/internal/repository/sqlc"
 	"github.com/ulule/deepcopier"
 )
 
 type UserRepo struct {
-	q *db.Queries
+	q *sqlc.Queries
+}
+
+func NewUserRepo(q *sqlc.Queries) *UserRepo {
+	return &UserRepo{q: q}
 }
 
 func (r *UserRepo) SelectById(ctx context.Context, id int32) (out domain.User, err error) {
@@ -30,7 +34,7 @@ func (r *UserRepo) SelectByEmail(ctx context.Context, email string) (out domain.
 }
 
 func (r *UserRepo) CreateUser(ctx context.Context, in domain.User) (out domain.User, err error) {
-	var params db.CreateUserParams
+	var params sqlc.CreateUserParams
 	err = deepcopier.Copy(in).To(&params)
 	if err != nil {
 		return
@@ -46,7 +50,7 @@ func (r *UserRepo) CreateUser(ctx context.Context, in domain.User) (out domain.U
 }
 
 func (r *UserRepo) UpdateUser(ctx context.Context, in domain.User) (out domain.User, err error) {
-	var params db.UpdateUserParams
+	var params sqlc.UpdateUserParams
 	err = deepcopier.Copy(in).To(&params)
 	if err != nil {
 		return
@@ -61,6 +65,6 @@ func (r *UserRepo) UpdateUser(ctx context.Context, in domain.User) (out domain.U
 	return
 }
 
-func (r *UserRepo) DeleteById(ctx context.Context, id int32) error {
+func (r *UserRepo) DeleteUserById(ctx context.Context, id int32) error {
 	return r.q.DeleteUserById(ctx, id)
 }

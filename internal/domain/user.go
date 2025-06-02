@@ -1,6 +1,5 @@
 package domain
 
-// todo add validation
 type User struct {
 	Id       int32  `validate:"gte=0"`
 	Username string `validate:"required,min=3,max=32"`

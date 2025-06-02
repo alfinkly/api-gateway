@@ -6,8 +6,8 @@ sql:
     schema: "./migrations"
     gen:
       go:
-        package: "db"
-        out: "./internal/repository/sqlc/db"
+        package: "sqlc"
+        out: "./internal/repository/sqlc"
 
         overrides:  # todo Переопределения типов, как-нибудь использовать
           - db_type: "vendor"

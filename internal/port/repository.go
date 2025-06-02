@@ -6,9 +6,9 @@ import (
 )
 
 type UserRepository interface {
-	SelectById(ctx context.Context, id int) (domain.User, error)
+	SelectById(ctx context.Context, id int32) (domain.User, error)
 	SelectByEmail(ctx context.Context, email string) (domain.User, error)
-	Create(ctx context.Context, u domain.User) (domain.User, error)
-	Update(ctx context.Context, u domain.User) (domain.User, error)
-	Delete(ctx context.Context, id int) error
+	CreateUser(ctx context.Context, in domain.User) (domain.User, error)
+	UpdateUser(ctx context.Context, in domain.User) (domain.User, error)
+	DeleteUserById(ctx context.Context, id int32) error
 }
